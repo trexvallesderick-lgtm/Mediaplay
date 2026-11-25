@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Help Center - MediaPlay</title>
+        <link rel="stylesheet" href="assets/css/styles.css" />
+    </head>
+    <body>
+        <div class="shell">
+            <aside class="sidebar" id="sidebar">
+                <div class="brand"><span class="brand-mark">▶</span> MediaPlay</div>
+                <nav class="nav">
+                    <a href="index.html">⌂ Home</a><a href="library.html">▣ All Videos</a
+                    ><a href="music.html">♫ Music</a><a href="playlists.html">≡ Playlists</a
+                    ><a href="favorites.html">★ Favorites</a><a href="history.html">◷ Watch History</a
+                    ><a href="settings.html">⚙ Settings</a><a class="active" href="help.html">? Help Center</a>
+                </nav>
+            </aside>
+            <main class="main">
+                <div class="topbar">
+                    <button class="icon-btn mobile-menu">☰</button>
+                    <div class="search"><span>⌕</span><input id="faqSearch" placeholder="Search help" /></div>
+                </div>
+                <h1 class="page-title">Help Center</h1>
+                <div id="faq">
+                    
+                    <section class="panel faq-category" data-category="folders">
+                        <h2>Folder Management</h2>
+                        <details>
+                            <summary>How do I add my first video folder?</summary>
+                            <p>
+                                Open Settings and enter the absolute directory path that PHP can read, such as
+                                <code>/home/user/Videos</code> or <code>D:\Media\Videos</code>, then choose Authorize.
+                            </p>
+                        </details>
+                        <details>
+                            <summary>How do I add another folder?</summary>
+                            <p>
+                                Repeat authorization in Settings. MediaPlay keeps all valid authorized directories. Use
+                                “Remove” beside a directory to remove only that directory.
+                            </p>
+                        </details>
+                        <details>
+                            <summary>Can I add folders from both C: and D: drives?</summary>
+                            <p>
+                                Yes. If PHP is running with permission to read each drive, you may authorize directories
+                                on each drive separately.
+                            </p>
+                        </details>
+                        <details>
+                            <summary>Why is the website asking for folder permissions?</summary>
+                            <p>
+                                Browsers do not allow websites to freely discover arbitrary folders. The native folder
+                                picker or the server-readable path field ensures access is explicit and limited.
+                            </p>
+                        </details>
+                        <details>
+                            <summary>Why are some videos missing?</summary>
+                            <p>
+                                Check that the folder is authorized, readable by PHP, and contains a supported
+                                extension: MP4, MKV, AVI, MOV, WMV, WEBM, M4V, MPG, MPEG, or TS.
+                            </p>
+                        </details>
+                    </section>
+                    
+                    <section class="panel faq-category" data-category="subtitles" style="margin-top: 16px">
+                        <h2>Subtitles</h2>
+                        <details>
+                            <summary>How do I add subtitles?</summary>
+                            <p>
+                                Place an SRT file beside the video and use the same filename:
+                                <code>MyMovie.mp4</code> and <code>MyMovie.srt</code>. Open the video and use the
+                                Subtitles selector.
+                            </p>
+                        </details>
+                        <details>
+                            <summary>How do I create my own SRT file?</summary>
+                            <p>
+                                Use Notepad or subtitle software, save with a UTF-8 <code>.srt</code> extension, and
+                                include numbered entries with <code>HH:MM:SS,mmm --> HH:MM:SS,mmm</colibraryde> timestamps.
+                            </p>
+                            <pre>1\n00:00:01,000 --> 00:00:04,000\nWelcome to my video!</pre>
+                        </details>
+                        <details>
+                            <summary>Can the browser generate subtitles automatically?</summary>
+                            <p>
+                                No. MediaPlay only loads existing SRT or VTT files. Automatic speech recognition would
+                                require separately added software or an internet service and is not currently
+                                implemented.
+                            </p>
+                        </details>
+                        <details>
+                            <summary>My subtitles are not showing.</summary>
+                            <p>
+                                Confirm a matching filename, an actual <code>.srt</code> extension, valid UTF-8 content,
+                                and that the folder remains authorized.
+                            </p>
+                        </details>
+                        <details>
+                            <summary>Can I use multiple subtitle languages?</summary>
+                            <p>
+                                Yes, organize files as <code>MyMovie.en.srt</code>, <code>MyMovie.fil.srt</code>, and
+                                <code>MyMovie.ja.srt</code>. Matching base names are offered in the player’s subtitle
+                                selector.
+                            </p>
+                        </details>
+                    </section>
+                    <section class="panel faq-category" data-category="library" style="margin-top: 16px">
+                        <h2>Library and Playback</h2>
+                        <details>
+                            <summary>How do thumbnails work?</summary>
+                            <p>
+                                The library generates thumbnails in the background, saves only each captured image in
+                                IndexedDB, and reuses saved thumbnails. Generation is limited to a small queue;
+                                unsupported or unreadable videos can be retried from their library card. Videos are not
+                                uploaded. Use “Refresh thumbnail” in the player to replace a saved image.
+                            </p>
+                        </details>
+                        <details>
+                            <summary>Why is a video not playable?</summary>
+                            <p>
+                                Try MP4 or WebM first. Some codecs, especially those inside AVI or MKV containers,
+                                require FFmpeg or a browser with matching codec support.
+                            </p>
+                        </details>
+                        <details>
+                            <summary>How do I use the Mini Player?</summary>
+                            <p>
+                                Start a video or use browser controls. A floating Mini Player preserves the local
+                                playback state while you navigate. It can be minimized or closed.
+                            </p>
+                        </details>
+                        <details>
+                            <summary>How do I change font size?</summary>
+                            <p>
+                                Open Settings, use the Font size controls, and refresh or reopen the site. The
+                                preference is saved locally.
+                            </p>
+                        </details>
+                        <details>
+                            <summary>How do I enable Incognito Mode?</summary>
+                            <p>
+                                Open the hamburger menu and select Incognito: OFF to change it to ON. It disables
+                                application-level history and playback persistence for your session.
+                            </p>
+                        </details>
+                    </section>
+                    <section class="panel faq-category" data-category="privacy" style="margin-top: 16px">
+                        <h2>Logging and Privacy</h2>
+                        <details>
+                            <summary>Where are logs stored?</summary>
+                            <p>
+                                MediaPlay does not create a separate application log file. PHP’s development server
+                                prints connection requests and errors only to the terminal.
+                            </p>
+                        </details>
+                        <details>
+                            <summary>Does Incognito hide terminal logs?</summary>
+                            <p>
+                                No. It cannot control PHP, operating-system, browser, or network records. It only
+                                prevents MediaPlay from saving application activity in browser storage.
+                            </p>
+                        </details>
+                        <details>
+                            <summary>Are video filenames recorded?</summary>
+                            <p>
+                                The PHP development server may print requested URL paths in terminal output. MediaPlay
+                                does not create persistent application logs or transmit filenames elsewhere.
+                            </p>
+                        </details>
+                    </section>
+                    <section class="panel faq-category" data-category="school-project" style="margin-top: 16px">
+                        <h2>Finals CEEL Mediaplay</h2>
+                        <details>
+                            <summary>Title of the project</summary>
+                            <p><strong>MediaPlay</strong></p>
+                        </details>
+                        <details>
+                            <summary>Summary of the project</summary>
+                            <p>
+                                MediaPlay is a private, local media library for organizing and playing video and music
+                                files. It lets users authorize folders, browse their media, manage playlists and
+                                favorites, view watch history, and play content without a login or cloud database.
+                            </p>
+                        </details>
+                        <details>
+                            <summary>Languages and tools used</summary>
+                            <p>
+                                <strong>Languages:</strong> HTML, CSS, JavaScript, and PHP.<br>
+                                <strong>Other tools:</strong> Local Storage and IndexedDB for browser data, FFmpeg
+                                for optional media processing, and the PHP development server.
+                            </p>
+                        </details>
+                    </section>
+                </div>
+                <p class="notice">
+                    Still need help? Review the relevant page first, then check browser permissions and the PHP terminal
+                    for local error messages.
+                </p>
+            </main>
+        </div>
+        <script src="assets/js/storage.js"></script>
+        <script src="assets/js/app.js"></script>
+        <script>
+            MediaApp.initShell();
+            document.getElementById("faqSearch").addEventListener("input", (e) => {
+                const term = e.target.value.toLower().trim();
+                document.querySelectorAll("#faq details").forEach((detail) => {
+                    detail.hidden = term && !detail.textContent.toLowerCase().includes(term);
+                });
+            });
+        </script>
+    </body>
+</html>

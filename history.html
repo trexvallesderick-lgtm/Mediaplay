@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>History - MediaPlay</title>
+        <link rel="stylesheet" href="assets/css/styles.css" />
+    </head>
+    <body>
+        <div class="shell">
+            <aside class="sidebar" id="sidebar">
+                <div class="brand"><span class="brand-mark">▶</span> MediaPlay</div>
+                <nav class="nav">
+                    <a href="index.html">⌂ Home</a><a href="library.html">▣ All Videos</a
+                    ><a href="library.html?category=movies">▸ Movies</a><a href="library.html?category=anime">▸ Anime</a
+                    ><a href="library.html?category=series">▸ Series</a><a href="music.html">♫ Music</a
+                    ><a href="playlists.html">≡ Playlists</a><a href="favorites.html">★ Favorites</a
+                    ><a class="active" href="history.html">◷ Watch History</a><a href="settings.html">⚙ Settings</a>
+                </nav>
+            </aside>
+            <main class="main">
+                <div class="topbar">
+                    <button class="icon-btn mobile-menu">☰</button>
+                    <div class="top-actions">
+                        <button class="btn" id="clearHistoryButton">Clear History</button
+                        ><button id="incognitoIndicator" class="incognito">Incognito</button>
+                    </div>
+                </div>
+                <h1 class="page-title">Watch History</h1>
+                <div id="historyContent"></div>
+            </main>
+        </div>
+        <script src="assets/js/storage.js"></script>
+        <script src="assets/js/app.js"></script>
+        <script>
+            MediaApp.initShell();
+            MediaApp.initHistory();
+            document.getElementById("clearHistoryButton").addEventListener("click", () => {
+                if (confirm("Clear watch history?")) {
+                    MediaStore.clearHistory();
+                    location.reload();
+                }
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Playlists - MediaPlay</title>
+        <link rel="stylesheet" href="assets/css/styles.css" />
+    </head>
+    <body>
+        <div class="shell">
+            <aside class="sidebar" id="sidebar">
+                <div class="brand"><span class="brand-mark">▶</span> MediaPlay</div>
+                <nav class="nav">
+                    <a href="index.html">⌂ Home</a><a href="library.html">▣ All Videos</a
+                    ><a href="library.html?category=movies">▸ Movies</a><a href="library.html?category=anime">▸ Anime</a
+                    ><a href="library.html?category=series">▸ Series</a><a href="music.html">♫ Music</a
+                    ><a class="active" href="playlists.html">≡ Playlists</a><a href="favorites.html">★ Favorites</a
+                    ><a href="history.html">◷ Watch History</a><a href="settings.html">⚙ Settings</a>
+                </nav>
+            </aside>
+            <main class="main">
+                <div class="topbar">
+                    <button class="icon-btn mobile-menu">☰</button>
+                    <div class="top-actions"><button id="incognitoIndicator" class="incognito">Incognito</button></div>
+                </div>
+                <h1 class="page-title">Playlists</h1>
+                <div class="panel">
+                    <div class="field">
+                        <input id="playlistName" placeholder="Playlist name" /><button
+                            class="btn btn-primary"
+                            id="createPlaylist"
+                        >
+                            Create
+                        </button>
+                    </div>
+                </div>
+                <div id="playlistContent" style="margin-top: 16px"></div>
+            </main>
+        </div>
+        <script src="assets/js/storage.js"></script>
+        <script src="assets/js/app.js"></script>
+        <script>
+            MediaApp.initShell();
+            const content = document.getElementById("playlistContent");
+            function escapeText(v) {
+                return String(v).replace(
+                    /[&<>"']/g,
+                    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]
+                );
+            }
+            function render() {
+                const lists = MediaStore.playlists();
+                content.innerHTML = lists.length
+                    ? lists
+                          .map(
+                              (p, index) =>
+                                  `<section class="panel" style="margin-bottom:12px" data-index="${index}"><div style="display:flex;align-items:center;gap:8px"><button class="playlist-name" style="flex:1" data-index="${index}">${escapeText(p.name)}</button><button class="btn play" data-index="${index}" ${p.items.length ? "" : "disabled"}>Play</button><button class="btn rename" data-index="${index}">Rename</button><button class="btn delete" data-index="${index}">Delete</button></div><div class="notice playlist-items" data-index="${index}" hidden>${p.items.length ? p.items.map((x, i) => `<div draggable="true" data-item="${i}">${i + 1}. ${escapeText(x.name || x.path)}</div>`).join("") : "No media added yet. Use “+ Playlist” in the video player."}</div></section>`
+                          )
+                          .join("")
+                    : '<div class="empty">No playlists yet.</div>';
+                content.querySelectorAll(".playlist-name").forEach((b) =>
+                    b.addEventListener("click", () => {
+                        const items = content.querySelector(`.playlist-items[data-index="${b.dataset.index}"]`);
+                        b.classList.toggle("active");
+                        items.hidden = !items.hidden;
+                    })
+                );
+                content.querySelectorAll(".play").forEach((b) =>
+                    b.addEventListener("click", () => {
+                        const p = MediaStore.playlists()[Number(b.dataset.index)];
+                        if (p?.items?.length)
+                            location.href = `player.html?file=${encodeURIComponent(p.items[0].path)}&playlist=${b.dataset.index}`;
+                    })
+                );
+                content.querySelectorAll(".delete").forEach((b) =>
+                    b.addEventListener("click", () => {
+                        const i = Number(b.dataset.index);
+                        if (confirm("Delete this playlist?")) {
+                            const p = MediaStore.playlists();
+                            p.splice(i, 1);
+                            MediaStore.savePlaylists(p);
+                            render();
+                        }
+                    })
+                );
+                content.querySelectorAll(".rename").forEach((b) =>
+                    b.addEventListener("click", () => {
+                        const i = Number(b.dataset.index);
+                        const name = prompt("Playlist name", MediaStore.playlists()[i].name);
+                        if (name?.trim()) {
+                            const p = MediaStore.playlists();
+                            p[i].name = name.trim();
+                            MediaStore.savePlaylists(p);
+                            render();
+                        }
+                    })
+                );
+            }
+            document.getElementById("createPlaylist").addEventListener("click", () => {
+                const input = document.getElementById("playlistName");
+                const name = input.value.trim();
+                if (!name) return;
+                const p = MediaStore.playlists();
+                p.push({ name, items: [] });
+                MediaStore.savePlaylists(p);
+                input.value = "";
+                render();
+            });
+            render();
+        </script>
+    </body>
+</html>

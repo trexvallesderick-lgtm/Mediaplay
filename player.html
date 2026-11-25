@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Playing - MediaPlay</title>
+        <link rel="stylesheet" href="assets/css/styles.css" />
+    </head>
+    <body>
+        <div class="shell">
+            <aside class="sidebar" id="sidebar">
+                <div class="brand"><span class="brand-mark">▶</span> MediaPlay</div>
+                <nav class="nav">
+                    <a href="index.html">⌂ Home</a><a class="active" href="library.html">▣ All Videos</a
+                    ><a href="library.html?category=movies">▸ Movies</a><a href="library.html?category=anime">▸ Anime</a
+                    ><a href="library.html?category=series">▸ Series</a><a href="music.html">♫ Music</a
+                    ><a href="playlists.html">≡ Playlists</a><a href="favorites.html">★ Favorites</a
+                    ><a href="history.html">◷ Watch History</a><a href="settings.html">⚙ Settings</a>
+                </nav>
+            </aside>
+            <main class="main">
+                <div class="topbar">
+                    <button class="icon-btn mobile-menu">☰</button><a class="btn" href="library.html">← Library</a>
+                    <div class="top-actions"><button id="incognitoIndicator" class="incognito">Incognito</button></div>
+                </div>
+                <div class="player-layout">
+                    <div id="videoArea">
+                        <video id="video" controls playsinline></video>
+                        <div id="timelineMarkers" class="timeline-markers" title="Saved bookmark markers"></div>
+                    </div>
+                    <div class="player-info">
+                        <div>
+                            <h1 id="videoTitle"></h1>
+                            <div id="videoMeta" class="notice"></div>
+                        </div>
+                        <div class="player-actions">
+                            <button class="btn" id="previousVideo">← Previous</button
+                            ><button class="btn" id="nextVideo">Next →</button
+                            ><label class="toggle"><input id="playlistRepeat" type="checkbox" /> Loop playlist</label
+                            ><label class="toggle"
+                                >Subtitles
+                                <select id="subtitleSelect">
+                                    <option value="">Off</option>
+                                </select></label
+                            ><button class="btn" id="addPlaylistButton">+ Playlist</button
+                            ><button class="btn" id="favoriteButton">☆ Favorite</button
+                            ><button class="btn" id="refreshThumbnail">Refresh thumbnail</button>
+                        </div>
+                    </div>
+                    <section class="panel" style="margin-top: 18px">
+                        <h2>Bookmarks</h2>
+                        <div class="field">
+                            <input id="bookmarkTitle" placeholder="Bookmark title" /><input
+                                id="bookmarkNote"
+                                placeholder="Optional note"
+                            /><button class="btn btn-primary" id="addBookmark">Add timestamp</button>
+                        </div>
+                        <div id="bookmarkList" class="notice" style="margin-top: 12px"></div>
+                    </section>
+                </div>
+            </main>
+        </div>
+        <script src="assets/js/storage.js"></script>
+        <script src="assets/js/app.js"></script>
+        <script>
+            MediaApp.initShell();
+            MediaApp.initPlayer();
+        </script>
+    </body>
+</html>

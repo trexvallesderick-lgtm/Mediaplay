@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Videos - MediaPlay</title>
+        <link rel="stylesheet" href="assets/css/styles.css" />
+    </head>
+    <body>
+        <div class="shell">
+            <aside class="sidebar" id="sidebar">
+                <div class="brand"><span class="brand-mark">▶</span> MediaPlay</div>
+                <nav class="nav">
+                    <a href="index.html">⌂ Home</a><a class="active" href="library.html">▣ All Videos</a
+                    ><a href="library.html?category=movies">▸ Movies</a><a href="library.html?category=anime">▸ Anime</a
+                    ><a href="library.html?category=series">▸ Series</a><a href="music.html">♫ Music</a
+                    ><a href="playlists.html">≡ Playlists</a><a href="favorites.html">★ Favorites</a
+                    ><a href="history.html">◷ Watch History</a><a href="settings.html">⚙ Settings</a>
+                </nav>
+            </aside>
+            <main class="main">
+                <div class="topbar">
+                    <button class="icon-btn mobile-menu">☰</button>
+                    <div class="search"><span>⌕</span><input id="searchInput" placeholder="Search videos" /></div>
+                    <div class="top-actions"><button id="incognitoIndicator" class="incognito">Incognito</button></div>
+                </div>
+                <h1 class="page-title" id="libraryTitle">Videos</h1>
+                <div id="libraryContent"></div>
+                <div style="margin-top: 28px; text-align: center">
+                    <button class="btn" id="addMoreButton">Video not here? Add more</button>
+                </div>
+            </main>
+        </div>
+        <script src="assets/js/storage.js"></script>
+        <script src="assets/js/app.js"></script>
+        <script>
+            MediaApp.initShell();
+            MediaApp.initLibrary();
+        </script>
+    </body>
+</html>

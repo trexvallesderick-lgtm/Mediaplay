@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Music - MediaPlay</title>
+        <link rel="stylesheet" href="assets/css/styles.css" />
+    </head>
+    <body>
+        <div class="shell">
+            <aside class="sidebar" id="sidebar">
+                <div class="brand"><span class="brand-mark">▶</span> MediaPlay</div>
+                <nav class="nav">
+                    <a href="index.html">⌂ Home</a><a href="library.html">▣ All Videos</a
+                    ><a href="library.html?category=movies">▸ Movies</a><a href="library.html?category=anime">▸ Anime</a
+                    ><a href="library.html?category=series">▸ Series</a><a class="active" href="music.html">♫ Music</a
+                    ><a href="playlists.html">≡ Playlists</a><a href="favorites.html">★ Favorites</a
+                    ><a href="history.html">◷ Watch History</a><a href="settings.html">⚙ Settings</a>
+                </nav>
+            </aside>
+            <main class="main">
+                <div class="topbar">
+                    <button class="icon-btn mobile-menu">☰</button>
+                    <div class="search"><span>⌕</span><input id="searchInput" placeholder="Search music" /></div>
+                    <div class="top-actions"><button id="incognitoIndicator" class="incognito">Incognito</button></div>
+                </div>
+                <h1 class="page-title">Music</h1>
+                <div id="musicContent"></div>
+            </main>
+        </div>
+        <div class="music-player" id="miniPlayer" hidden>
+            <div class="music-meta"><strong id="audioTitle"></strong><span id="audioMeta"></span></div>
+            <div class="music-controls">
+                <button class="icon-btn" id="audioPrevious" type="button">←</button
+                ><button class="icon-btn" id="audioPlay" type="button">▶</button
+                ><button class="icon-btn" id="audioNext" type="button">→</button
+                ><button class="icon-btn" id="audioShuffle" type="button">⤨</button>
+            </div>
+            <input id="audioProgress" class="music-progress" type="range" min="0" max="100" value="0" /><audio
+                id="audio"
+            ></audio>
+        </div>
+        <script src="assets/js/storage.js"></script>
+        <script src="assets/js/app.js"></script>
+        <script>
+            MediaApp.initShell();
+            MediaApp.initMusic();
+            document.getElementById("audioPlay").addEventListener("click", () => {
+                const a = document.getElementById("audio");
+                a.paused ? a.play() : a.pause();
+            });
+            document
+                .getElementById("audio")
+                .addEventListener("play", () => (document.getElementById("audioPlay").textContent = "Ⅱ"));
+            document
+                .getElementById("audio")
+                .addEventListener("pause", () => (document.getElementById("audioPlay").textContent = "▶"));
+            document.getElementById("audio").addEventListener("timeupdate", () => {
+                const a = document.getElementById("audio");
+                document.getElementById("audioProgress").value = a.duration ? (100 * a.currentTime) / a.duration : 0;
+            });
+            document.getElementById("audioProgress").addEventListener("input", (e) => {
+                const a = document.getElementById("audio");
+                if (a.duration) a.currentTime = (a.duration * e.target.value) / 100;
+            });
+            (async () => {
+                const library = await MediaApp.loadLibrary();
+                let current = -1;
+                const setCurrent = (path) => {
+                    current = library.music.findIndex((v) => v.path === path);
+                };
+                document.getElementById("audioPrevious").addEventListener("click", () => {
+                    if (!library.music.length) return;
+                    if (current < 0) current = 0;
+                    current = (current - 1 + library.music.length) % library.music.length;
+                    history.replaceState(
+                        null,
+                        "",
+                        `music.html?file=${encodeURIComponent(library.music[current].path)}`
+                    );
+                    playTrack(library.music[current].path);
+                });
+                document.getElementById("audioNext").addEventListener("click", () => {
+                    if (!library.music.length) return;
+                    current = (current + 1) % library.music.length;
+                    history.replaceState(
+                        null,
+                        "",
+                        `music.html?file=${encodeURIComponent(library.music[current].path)}`
+                    );
+                    playTrack(library.music[current].path);
+                });
+                document.getElementById("audioShuffle").addEventListener("click", () => {
+                    if (!library.music.length) return;
+                    current = Math.floor(Math.random() * library.music.length);
+                    history.replaceState(
+                        null,
+                        "",
+                        `music.html?file=${encodeURIComponent(library.music[current].path)}`
+                    );
+                    playTrack(library.music[current].path);
+                });
+                const path = new URLSearchParams(location.search).get("file");
+                if (path) setCurrent(path);
+                function playTrack(target) {
+                    const card = library.music.find((v) => v.path === target);
+                    if (!card) return;
+                    setCurrent(target);
+                    const a = document.getElementById("audio");
+                    a.src = MediaApp.streamUrl(card.path);
+                    document.getElementById("miniPlayer").hidden = false;
+                    document.getElementById("audioTitle").textContent = card.name.replace(/\.[^.]+$/, "");
+                    document.getElementById("audioMeta").textContent =
+                        `${card.type.toUpperCase()} · ${card.parent || "Root"}`;
+                    a.play().catch(() => {});
+                }
+            })();
+        </script>
+    </body>
+</html>

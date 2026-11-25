@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Settings - MediaPlay</title>
+        <link rel="stylesheet" href="assets/css/styles.css" />
+    </head>
+    <body>
+        <div class="shell">
+            <aside class="sidebar" id="sidebar">
+                <div class="brand"><span class="brand-mark">▶</span> MediaPlay</div>
+                <nav class="nav">
+                    <a href="index.html">⌂ Home</a><a href="library.html">▣ All Videos</a
+                    ><a href="library.html?category=movies">▸ Movies</a><a href="library.html?category=anime">▸ Anime</a
+                    ><a href="library.html?category=series">▸ Series</a><a href="music.html">♫ Music</a
+                    ><a href="playlists.html">≡ Playlists</a><a href="favorites.html">★ Favorites</a
+                    ><a href="history.html">◷ Watch History</a><a class="active" href="settings.html">⚙ Settings</a>
+                </nav>
+            </aside>
+            <main class="main">
+                <div class="topbar">
+                    <button class="icon-btn mobile-menu">☰</button>
+                    <div class="top-actions"><button id="incognitoIndicator" class="incognito">Incognito</button></div>
+                </div>
+                <h1 class="page-title">Settings</h1>
+                <div class="settings-grid">
+                    <section class="panel">
+                        <h2>Authorized media directories</h2>
+                        <p class="notice">
+                            Choose a folder for each category. PHP must be able to read each absolute directory. Files
+                            stay local and are never moved or uploaded.
+                        </p>
+                        <div id="categoryFolders"></div>
+                        <div style="margin-top: 10px">
+                            <button class="btn" id="clearRootButton">Clear all authorizations</button>
+                        </div>
+                    </section>
+                    <section class="panel">
+                        <h2>Privacy</h2>
+                        <label class="toggle"><input id="incognitoToggle" type="checkbox" /> Incognito mode</label>
+                        <p class="notice">
+                            While enabled, MediaPlay does not save watch history, playback progress, searches, temporary
+                            playlists, favorites, or playlist changes.
+                        </p>
+                        <h2>Application data</h2>
+                        <div class="field">
+                            <button class="btn" id="exportButton">Export settings</button
+                            ><button class="btn" id="importButton">Import settings</button
+                            ><input id="importFile" type="file" accept="application/json" hidden />
+                        </div>
+                    </section>
+                    <section class="panel">
+                        <h2>Font size</h2>
+                        <div class="field">
+                            <button class="btn" id="fontDecrease">A−</button
+                            ><span id="fontValue" class="notice" style="align-self: center"></span
+                            ><button class="btn" id="fontIncrease">A+</button>
+                        </div>
+                    </section>
+                    <section class="panel">
+                        <h2>Background customization</h2>
+                        <div class="field">
+                            <button class="btn" id="backgroundButton">Choose image</button
+                            ><button class="btn" id="backgroundReset">Restore default</button
+                            ><input id="backgroundFile" type="file" accept="image/jpeg,image/png,image/webp" hidden />
+                        </div>
+                        <label class="notice" style="display: block; margin-top: 12px"
+                            >Overlay intensity <input id="backgroundOpacity" type="range" min="30" max="90" value="72"
+                        /></label>
+                    </section>
+                </div>
+            </main>
+        </div>
+        <script src="assets/js/storage.js"></script>
+        <script src="assets/js/app.js"></script>
+        <script>
+            MediaApp.initShell();
+            MediaApp.initSettings();
+            MediaApp.initCommonControls();
+            document.getElementById("incognitoToggle").checked = MediaStore.incognito();
+            document.getElementById("exportButton").addEventListener("click", () => {
+                const blob = new Blob([JSON.stringify(MediaStore.exportData(), null, 2)], { type: "application/json" });
+                const a = document.createElement("a");
+                a.href = URL.createObjectURL(blob);
+                a.download = "mediaplay-settings.json";
+                a.click();
+                URL.revokeObjectURL(a.href);
+            });
+            document
+                .getElementById("importButton")
+                .addEventListener("click", () => document.getElementById("importFile").click());
+            document.getElementById("importFile").addEventListener("change", async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                try {
+                    MediaStore.importData(JSON.parse(await file.text()));
+                    alert("Settings imported.");
+                } catch {
+                    alert("Invalid settings file.");
+                }
+            });
+            (function () {
+                let size = MediaStore.prefs().fontSize || 16;
+                function setFont(next) {
+                    size = Math.max(12, Math.min(24, next));
+                    const prefs = MediaStore.prefs();
+                    prefs.fontSize = size;
+                    MediaStore.savePrefs(prefs);
+                    document.documentElement.style.setProperty("--site-font-size", size + "px");
+                    document.getElementById("fontValue").textContent = size + "px";
+                }
+                setFont(size);
+                document.getElementById("fontDecrease").addEventListener("click", () => setFont(size - 1));
+                document.getElementById("fontIncrease").addEventListener("click", () => setFont(size + 1));
+                const opacity = document.getElementById("backgroundOpacity");
+                opacity.value = MediaStore.prefs().backgroundOpacity || 72;
+                opacity.addEventListener("input", () => {
+                    const prefs = MediaStore.prefs();
+                    prefs.backgroundOpacity = opacity.value;
+                    MediaStore.savePrefs(prefs);
+                    location.reload();
+                });
+                document
+                    .getElementById("backgroundButton")
+                    .addEventListener("click", () => document.getElementById("backgroundFile").click());
+                document.getElementById("backgroundFile").addEventListener("change", async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    await MediaStore.dbSet("background", "image", file);
+                    const prefs = MediaStore.prefs();
+                    prefs.backgroundOpacity = opacity.value;
+                    MediaStore.savePrefs(prefs);
+                    location.reload();
+                });
+                document.getElementById("backgroundReset").addEventListener("click", async () => {
+                    await MediaStore.dbDelete("background", "image");
+                    const prefs = MediaStore.prefs();
+                    delete prefs.backgroundOpacity;
+                    MediaStore.savePrefs(prefs);
+                    location.reload();
+                });
+            })();
+        </script>
+    </body>
+</html>
