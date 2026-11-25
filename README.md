@@ -1,6 +1,15 @@
 # MediaPlay
 
-MediaPlay is a private, local video and music library. It has no login, database, analytics, or cloud dependency.
+# Title of the project
+
+MediaPlay
+# Summary of the project
+
+MediaPlay is a private, local media library for organizing and playing video and music files. It lets users authorize folders, browse their media, manage playlists and favorites, view watch history, and play content without a login or cloud database.
+Languages and tools used
+
+Languages: HTML, CSS, JavaScript, and PHP.
+Other tools: Local Storage and IndexedDB for browser data, FFmpeg for optional media processing, and the PHP development server.
 
 ## Requirements
 
